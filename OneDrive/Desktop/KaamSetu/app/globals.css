@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-display: "Aptos Display", "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { background: #f6f3eb; }
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #f6f3eb;
+  color: #12231f;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: #dff3eb; color: #0f4d43; }
+
+@layer components {
+  .eyebrow { @apply text-[11px] font-bold uppercase tracking-[0.18em] text-moss; }
+  .panel { @apply rounded-panel border border-ink/10 bg-white shadow-card; }
+  .focus-ring { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2; }
+}

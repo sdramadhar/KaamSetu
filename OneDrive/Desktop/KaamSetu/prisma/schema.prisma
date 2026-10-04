@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleCode {
+  WORKER
+  STUDENT
+  EMPLOYER
+  CONTRACTOR
+  TRAINING_PROVIDER
+  PARTNER
+  FIELD_COORDINATOR
+  ADMIN
+}
+
+enum ConsentType {
+  PROFILE_DISCOVERY
+  CONTACT_SHARING
+  LOCATION_APPROXIMATION
+  DATA_PROCESSING
+  COMMUNICATIONS
+}
+
+model User {
+  id          String       @id @default(uuid()) @db.Uuid
+  phone       String?      @unique
+  email       String?      @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  profile     Profile?
+  roles       UserRole[]
+  skills      UserSkill[]
+  consents    Consent[]
+  auditEvents AuditLog[]   @relation("AuditActor")
+
+  @@index([createdAt])
+  @@map("users")
+}
+
+model Role {
+  id        String     @id @default(uuid()) @db.Uuid
+  code      RoleCode   @unique
+  createdAt DateTime   @default(now())
+  users     UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId     String   @db.Uuid
+  roleId     String   @db.Uuid
+  assignedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model Profile {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @unique @db.Uuid
+  displayName     String?
+  preferredLocale String    @default("en-IN")
+  localityId      String?   @db.Uuid
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  locality        Locality? @relation(fields: [localityId], references: [id], onDelete: SetNull)
+
+  @@index([localityId])
+  @@map("profiles")
+}
+
+model Locality {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  region    String
+  country   String    @default("IN")
+  profiles  Profile[]
+  createdAt DateTime  @default(now())
+
+  @@unique([name, region, country])
+  @@map("localities")
+}
+
+model Organization {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("organizations")
+}
+
+model Skill {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String      @unique
+  createdAt   DateTime    @default(now())
+  userSkills  UserSkill[]
+
+  @@index([name])
+  @@map("skills")
+}
+
+model UserSkill {
+  userId       String   @db.Uuid
+  skillId      String   @db.Uuid
+  proficiency  Int      @default(1)
+  verifiedAt   DateTime?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill        Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([userId, skillId])
+  @@index([skillId, proficiency])
+  @@map("user_skills")
+}
+
+model Consent {
+  id         String      @id @default(uuid()) @db.Uuid
+  userId     String      @db.Uuid
+  type       ConsentType
+  granted    Boolean     @default(false)
+  version    String
+  createdAt  DateTime    @default(now())
+  withdrawnAt DateTime?
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+  @@map("consents")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorId     String?  @db.Uuid
+  action      String
+  entityType  String
+  entityId    String?
+  requestId   String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  actor       User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+  @@map("audit_logs")
+}
