@@ -36,7 +36,7 @@ Authentication is a server-owned session/OTP abstraction. Authorization uses ser
 
 ## Database
 
-PostgreSQL is accessed through Prisma. The first schema establishes users, roles, profiles, localities, organizations, skills, consent, and audit logs. Future workflow tables should reference stable UUIDs and carry created/updated timestamps. Migration changes are reviewed and applied through Prisma commands, never by ad-hoc production SQL.
+PostgreSQL is accessed through Prisma. The Part 02 schema establishes identity, worker/employer profiles, skills, approximate localities, opportunities, applications, trust, training, notifications, future work and wage records, governance, recommendations, and product events. Future workflow code references stable UUIDs and explicit relations. Migration changes are reviewed and applied through Prisma commands, never by ad-hoc production SQL. Exact worker home coordinates are deliberately absent.
 
 ## Reliability and errors
 

@@ -1,6 +1,6 @@
 # KaamSetu
 
-KaamSetu is a multilingual, hyperlocal workforce and opportunity platform. This repository is the **Part 01 foundation**: a production-minded modular monolith scaffold designed to support workers, employers, partners, and field operations without prematurely implementing marketplace workflows.
+KaamSetu is a multilingual, hyperlocal workforce and opportunity platform. This repository is the **Part 01–02 foundation**: a production-minded modular monolith scaffold and relational database base designed to support workers, employers, partners, and field operations without prematurely implementing marketplace workflows.
 
 ## Stack
 
@@ -23,7 +23,7 @@ The development server binds to `127.0.0.1:3000` for the managed Local First pre
 
 ## Scope boundary
 
-Implemented now: repository foundation, module boundaries, design-system tokens, structured logging, centralized error responses, Zod validation, Prisma schema foundation, health endpoint, route manifest, tests, and documentation.
+Implemented now: repository foundation, module boundaries, design-system tokens, structured logging, centralized error responses, Zod validation, the Part 02 Prisma relational schema and initial SQL migration, health endpoint, route manifest, tests, and documentation.
 
 Deferred: payment gateways, AI/ML matching, chat, WhatsApp/SMS, complex onboarding, advanced employer workflows, and microservices. See [`docs/architecture.md`](docs/architecture.md).
 
